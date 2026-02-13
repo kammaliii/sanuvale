@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@400;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#130016; --bg2:#3a0b42; --bg3:#ff5f7d;
+      --yes:#7be495; --no:#ff9aa2; --cream:#fff7f1;
+      --glass:rgba(255,255,255,0.12); --glass-border:rgba(255,255,255,0.3);
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; width:100%; height:100%; overflow:hidden;
+      font-family:"Manrope",sans-serif; color:var(--cream);
+      background:
+        radial-gradient(1200px 700px at 10% 20%, #6a1b7e44 0%, transparent 60%),
+        radial-gradient(900px 500px at 90% 80%, #ff5f7d55 0%, transparent 60%),
+        linear-gradient(120deg,var(--bg1),var(--bg2) 48%,#5a0c63 70%,var(--bg3));
+    }
+
+    .stars, .hearts, .confetti{ position:fixed; inset:0; pointer-events:none; }
+    .center{ position:relative; height:100%; display:grid; place-items:center; padding:20px; z-index:2; }
+    .card{
+      width:min(92vw,760px); text-align:center; border-radius:28px; padding:28px 24px;
+      border:1px solid var(--glass-border);
+      background:linear-gradient(140deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+      backdrop-filter: blur(10px); box-shadow:var(--shadow);
+      animation:floatIn .9s ease forwards;
+    }
+    @keyframes floatIn{ from{opacity:0;transform:translateY(28px) scale(.98)} to{opacity:1;transform:none} }
+
+    .title{
+      font-family:"Great Vibes",cursive; margin:4px 0 6px;
+      font-size:clamp(2.2rem,7vw,4.6rem); color:#ffe5ee; text-shadow:0 0 30px #ff77aa60;
+    }
+    .subtitle{
+      font-family:"Cormorant Garamond",serif; margin:0 0 18px;
+      font-size:clamp(1rem,2.7vw,1.4rem); opacity:.95;
+    }
+
+    .envelope-wrap{display:grid; place-items:center; margin:14px 0 18px;}
+    .envelope{width:min(78vw,340px); height:210px; position:relative; cursor:pointer; transition:transform .35s ease;}
+    .envelope:hover{transform:translateY(-6px) scale(1.02)}
+    .env-back,.env-front,.env-top,.letter{position:absolute; left:0; right:0; margin:auto;}
+    .env-back{
+      bottom:0; width:100%; height:100%; border-radius:14px;
+      background:linear-gradient(135deg,#ffd1dc,#ff9eb5); box-shadow:0 12px 28px rgba(0,0,0,.25) inset;
+    }
+    .env-front{
+      bottom:0; width:100%; height:60%; z-index:3;
+      clip-path:polygon(0 0,50% 70%,100% 0,100% 100%,0 100%);
+      background:#ff7ea1; border-radius:0 0 14px 14px;
+    }
+    .env-top{
+      top:0; width:100%; height:56%; z-index:4; transform-origin:top;
+      clip-path:polygon(0 0,50% 90%,100% 0,100% 0,0 0); background:#ff8fab; transition:transform .8s ease;
+    }
+    .letter{
+      top:18px; width:86%; height:74%; z-index:2; overflow:hidden;
+      background:#fff8f4; border-radius:12px; color:#6f2143; padding:14px 12px;
+      font-family:"Cormorant Garamond",serif; font-size:1.08rem;
+      transform:translateY(55px); transition:transform .9s ease .1s;
+    }
+    .letter p{margin:0; opacity:0}
+    .open .env-top{transform:rotateX(180deg)}
+    .open .letter{transform:translateY(-38px)}
+    .open .letter p{opacity:1; transition:opacity .5s ease .4s}
+
+    .actions{
+      margin-top:20px; min-height:54px;
+      display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
+    }
+    button{
+      border:none; cursor:pointer; border-radius:999px; padding:12px 18px; font-weight:700;
+      transition:transform .25s ease, box-shadow .25s ease; box-shadow:0 8px 20px rgba(0,0,0,.25);
+    }
+    .yes{background:linear-gradient(120deg,#9af5b0,var(--yes)); color:#12311f;}
+    .no{background:linear-gradient(120deg,#ffd4da,var(--no)); color:#4f1f2b;}
+    .hidden{display:none!important}
+
+    .final{
+      margin-top:18px; opacity:0; transform:translateY(10px); transition:.7s ease;
+      font-family:"Cormorant Garamond",serif; font-size:clamp(1.15rem,3.2vw,1.8rem);
+    }
+    .final.show{opacity:1; transform:none}
+
+    .tag{display:inline-block; margin-top:10px; font-size:.9rem; opacity:.85; letter-spacing:.04em;}
+    .aurora{
+      position:fixed; inset:-20%; z-index:1; pointer-events:none;
+      background:
+        radial-gradient(circle at 25% 30%, #ff8fab55 0 25%, transparent 45%),
+        radial-gradient(circle at 75% 40%, #ffd6a555 0 22%, transparent 42%),
+        radial-gradient(circle at 50% 75%, #b8f2e655 0 26%, transparent 45%);
+      filter:blur(35px); opacity:0; transition:opacity 1s ease; animation:drift 9s linear infinite alternate;
+    }
+    .aurora.on{opacity:1}
+    @keyframes drift{from{transform:translate(-2%, -1%) scale(1)}to{transform:translate(2%, 1%) scale(1.08)}}
+    @media (max-width: 600px){ .card{padding:22px 14px} .letter{font-size:1rem} }
+  </style>
+</head>
+<body>
+  <canvas class="stars"></canvas>
+  <canvas class="hearts"></canvas>
+  <canvas class="confetti"></canvas>
+  <div class="aurora" id="aurora"></div>
+
+  <main class="center">
+    <section class="card" id="card">
+      <div class="title" id="mainTitle">For You, My Love</div>
+      <div class="subtitle" id="subtitle">Been making this since a while ago... didn't know if ill ever sent this to you but....</div>
+
+      <div class="envelope-wrap">
+        <div class="envelope" id="envelope" aria-label="Open letter">
+          <div class="env-back"></div>
+          <div class="letter"><p id="letterText"></p></div>
+          <div class="env-front"></div>
+          <div class="env-top"></div>
+        </div>
+      </div>
+
+      <div class="actions hidden" id="actions">
+        <button class="yes" id="yesBtn">Yessssss💘</button>
+        <button class="no" id="noBtn">No(fuck you)</button>
+      </div>
+
+      <div class="final" id="finalMsg"></div>
+      <div class="tag">Tap the envelope first ✨</div>
+    </section>
+  </main>
+
+  <script>
+  
+    const HER_NAME = "sanudhiii";
+    const YOUR_NAME = "chiran";
+    const DATE_IDEA = "Friday night: rooftop lights, warm coffee, and us.";
+
+    const letter = `sooo sanudhi,
+its kinda weird since its complicated what we are 😭❤️❤️‍🩹.buttt tbh , everythings has be better with you , everything has been better SINCE you baby,soo will you be my first ever valentine?
+yours most annoying,
+${YOUR_NAME}`;
+
+    const envelope = document.getElementById("envelope");
+    const actions = document.getElementById("actions");
+    const letterText = document.getElementById("letterText");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const finalMsg = document.getElementById("finalMsg");
+    const aurora = document.getElementById("aurora");
+
+    document.getElementById("mainTitle").textContent = `For My Beautiful Girl`;
+    let opened = false;
+
+    function typeWriter(text, speed = 24){
+      letterText.textContent = "";
+      let i = 0;
+      const t = setInterval(() => {
+        letterText.textContent += text[i] || "";
+        i++;
+        if(i > text.length) clearInterval(t);
+      }, speed);
+    }
+
+    envelope.addEventListener("click", () => {
+      if (opened) return;
+      opened = true;
+      envelope.classList.add("open");
+      typeWriter(letter);
+      actions.classList.remove("hidden");
+    });
+
+    // New behavior: No click grows Yes button
+    let noClickCount = 0;
+    const maxNoClicks = 6;
+    const noTexts = [
+      "btch wtff",
+      "trackdaaa",
+      "You’re too cute to say no ",
+      "sanudhiii😑😑😑😑",
+      "no more calls ehnn😑",
+      "noooooooooooooo"
+    ];
+
+    function updateYesButtonSize() {
+      const scale = 1 + Math.min(noClickCount * 0.2, 1.2); // up to ~2.2x
+      yesBtn.style.transform = `scale(${scale})`;
+      yesBtn.style.boxShadow = `0 12px 28px rgba(123,228,149,${0.25 + noClickCount * 0.08})`;
+    }
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      noClickCount++;
+      updateYesButtonSize();
+      noBtn.textContent = noTexts[Math.min(noClickCount - 1, noTexts.length - 1)];
+      if (noClickCount >= maxNoClicks) noBtn.textContent = "Not now";
+    });
+
+    yesBtn.addEventListener("click", () => {
+      aurora.classList.add("on");
+      burstHearts(36);
+      confettiBoom(220);
+      finalMsg.innerHTML = `knew you'say yess,mwaaaahhhhhhh❤️andd babyyyy,i met you when i had no plans of falling for someone,i wasnt looking to dance but your soul sang a song i couldnt resist.meeting you a few months back was like listening to a song and knowing it'll be my favourite one ill play on repeat(also ik this is cringe afff)
+</strong>`;
+      finalMsg.classList.add("show");
+      actions.classList.add("hidden");
+      document.getElementById("subtitle").textContent = "Best. Valentine. Ever.";
+    });
+
+    // Star field
+    const starCanvas = document.querySelector(".stars");
+    const sctx = starCanvas.getContext("2d");
+    let stars = [];
+    function resizeAll(){
+      [starCanvas, document.querySelector(".hearts"), document.querySelector(".confetti")].forEach(c=>{
+        c.width = innerWidth * devicePixelRatio;
+        c.height = innerHeight * devicePixelRatio;
+        c.style.width = innerWidth + "px";
+        c.style.height = innerHeight + "px";
+      });
+      sctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+      initStars();
+    }
+    function initStars(){
+      stars = Array.from({length:150}, () => ({
+        x: Math.random()*innerWidth,
+        y: Math.random()*innerHeight,
+        r: Math.random()*1.8 + 0.2,
+        a: Math.random(),
+        v: Math.random()*0.02 + 0.005
+      }));
+    }
+    function drawStars(){
+      sctx.clearRect(0,0,innerWidth,innerHeight);
+      for(const st of stars){
+        st.a += st.v;
+        const alpha = (Math.sin(st.a)+1)/2;
+        sctx.beginPath();
+        sctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+        sctx.fillStyle = `rgba(255,255,255,${0.2+alpha*0.8})`;
+        sctx.fill();
+      }
+      requestAnimationFrame(drawStars);
+    }
+
+    // Hearts
+    const heartsCanvas = document.querySelector(".hearts");
+    const hctx = heartsCanvas.getContext("2d");
+    let hearts = [];
+    function heartShape(x,y,s,c,a=1){
+      hctx.save(); hctx.translate(x,y); hctx.scale(s,s);
+      hctx.fillStyle = c; hctx.globalAlpha = a;
+      hctx.beginPath();
+      hctx.moveTo(0,0);
+      hctx.bezierCurveTo(0,-3,-5,-3,-5,0);
+      hctx.bezierCurveTo(-5,3,0,5,0,8);
+      hctx.bezierCurveTo(0,5,5,3,5,0);
+      hctx.bezierCurveTo(5,-3,0,-3,0,0);
+      hctx.fill();
+      hctx.restore();
+    }
+    function burstHearts(n){
+      hearts = hearts.concat(Array.from({length:n}, () => ({
+        x: innerWidth/2 + (Math.random()*140-70),
+        y: innerHeight/2 + (Math.random()*80-40),
+        vx: Math.random()*4-2,
+        vy: Math.random()*-3-1,
+        g: 0.04 + Math.random()*0.03,
+        life: 120 + Math.random()*60,
+        age: 0,
+        s: 1.2 + Math.random()*1.8,
+        c: Math.random()>0.5 ? "#ff8fab" : "#ffd6a5"
+      })));
+    }
+    function drawHearts(){
+      hctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+      hctx.clearRect(0,0,innerWidth,innerHeight);
+      hearts = hearts.filter(h => h.age < h.life);
+      hearts.forEach(h=>{
+        h.x += h.vx; h.y += h.vy; h.vy += h.g; h.age++;
+        heartShape(h.x, h.y, h.s, h.c, 1 - h.age/h.life);
+      });
+      requestAnimationFrame(drawHearts);
+    }
+
+    // Confetti
+    const confCanvas = document.querySelector(".confetti");
+    const cctx = confCanvas.getContext("2d");
+    let confs = [];
+    function confettiBoom(n){
+      const colors = ["#ff8fab","#ffd6a5","#b8f2e6","#fff1b8","#caffbf"];
+      confs = confs.concat(Array.from({length:n}, () => ({
+        x: innerWidth/2, y: innerHeight/2,
+        vx: (Math.random()*10-5), vy: (Math.random()*-8-2),
+        g: 0.12 + Math.random()*0.05,
+        s: 4 + Math.random()*5,
+        r: Math.random()*Math.PI,
+        rv: Math.random()*0.2-0.1,
+        life: 80 + Math.random()*50,
+        age: 0,
+        c: colors[Math.floor(Math.random()*colors.length)]
+      })));
+    }
+    function drawConfetti(){
+      cctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+      cctx.clearRect(0,0,innerWidth,innerHeight);
+      confs = confs.filter(p => p.age < p.life);
+      confs.forEach(p=>{
+        p.x += p.vx; p.y += p.vy; p.vy += p.g; p.r += p.rv; p.age++;
+        cctx.save();
+        cctx.translate(p.x,p.y);
+        cctx.rotate(p.r);
+        cctx.globalAlpha = 1 - p.age/p.life;
+        cctx.fillStyle = p.c;
+        cctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);
+        cctx.restore();
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+
+    addEventListener("resize", resizeAll);
+    resizeAll();
+    drawStars();
+    drawHearts();
+    drawConfetti();
+  </script>
+</body>
+</html>
